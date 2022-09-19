@@ -33,13 +33,16 @@ public class ParticipantWithExemptionsPairingServiceImpl implements PairingServi
 
                 if (!candidateIndexes.isEmpty()) {
                     int candidateIndex = candidateIndexes.get(this.random.nextInt(candidateIndexes.size()));
-                    currentParticipant.setReceiver(this.participants.get(candidateIndex));
+                    currentParticipant.setReceiver(this.participants.remove(candidateIndex));
                 }
             }
 
             if (this.participants.stream()
                     .map(Participant::getReceiver)
                     .anyMatch(Objects::isNull)) {
+                // One or more participant's only recipient options were an exemption
+                // we need to reroll again to make sure everyone gets a user without exemption.
+                this.participants.stream().forEach(p -> p.setReceiver(null));
                 doesNeedReroll = true;
             }
             else {
