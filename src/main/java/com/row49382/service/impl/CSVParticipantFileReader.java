@@ -20,8 +20,7 @@ public class CSVParticipantFileReader extends CSVPOJOFileReader<Participant, Lis
         List<Participant> participants = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(
-
-                             new InputStreamReader(getClass().getClassLoader().getResourceAsStream(this.fileName)))) {
+                new InputStreamReader(getClass().getClassLoader().getResourceAsStream(this.fileName)))) {
             String line;
             boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
