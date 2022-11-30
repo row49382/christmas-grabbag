@@ -26,10 +26,11 @@ public class CSVParticipantPairingExemptionsFileReader extends CSVFileReader<Map
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(getClass().getClassLoader().getResourceAsStream(this.fileName)))) {
             String line;
+            boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
                 // skip the first line of all csv files so you don't read header values
-                if (this.isFirstLine) {
-                    this.isFirstLine = false;
+                if (isFirstLine) {
+                    isFirstLine = false;
                     continue;
                 }
 
