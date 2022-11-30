@@ -6,6 +6,7 @@ import com.row49382.service.CSVPOJOFileReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +18,16 @@ public class CSVParticipantFileReader extends CSVPOJOFileReader<Participant, Lis
 
     public List<Participant> read() throws IOException {
         List<Participant> participants = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(this.fileName))) {
+        try (BufferedReader br = new BufferedReader(
+                             new InputStreamReader(getClass().getClassLoader().getResourceAsStream(this.fileName)))) {
             String line;
             while ((line = br.readLine()) != null) {
+                // skip the first line of all csv files so you don't read header values
+                if (this.isFirstLine) {
+                    this.isFirstLine = false;
+                    continue;
+                }
+
                 String[] lineData = line.split(Character.toString(this.delimiter));
                 participants.add(this.mapToPOJO(lineData));
             }
