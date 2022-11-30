@@ -1,24 +1,20 @@
 package com.row49382.domain;
 
 public class Participant {
-    private String name;
+    private final String name;
+    private final String email;
     private Participant receiver;
-    private boolean isPicked;
-    private String email;
+    private boolean picked;
 
     public Participant(String name, String email) {
         this.name = name;
         this.email = email;
-        this.isPicked = false;
         this.receiver = null;
+        this.picked = false;
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Participant getReceiver() {
@@ -30,18 +26,20 @@ public class Participant {
     }
 
     public boolean isPicked() {
-        return isPicked;
+        return this.picked;
     }
 
     public void setPicked(boolean picked) {
-        isPicked = picked;
+        this.picked = picked;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    public String toString() {
+        String receiverName = this.getReceiver() != null ? this.getReceiver().getName() : "null";
+        return String.format("%s has %s", this.getName(), receiverName);
     }
 }
