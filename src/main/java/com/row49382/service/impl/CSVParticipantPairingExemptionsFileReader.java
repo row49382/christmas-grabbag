@@ -28,7 +28,7 @@ public class CSVParticipantPairingExemptionsFileReader extends CSVFileReader<Map
             String line;
             boolean isFirstLine = true;
             while ((line = br.readLine()) != null) {
-                // skip the first line of all csv files so you don't read header values
+                // skip the first line of all csv files, so you don't read header values
                 if (isFirstLine) {
                     isFirstLine = false;
                     continue;
