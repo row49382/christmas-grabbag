@@ -1,10 +1,12 @@
-package com.row49382.util;
+package com.row49382.util.impl;
+
+import com.row49382.util.PropertiesManager;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
 
-public class ApplicationPropertiesManager {
+public class ApplicationPropertiesManager extends PropertiesManager {
     private static final String APP_PROPERTIES_FILE_NAME = "application.properties";
     private static final String APP_PROPERTIES_OFFICIANT_NAME_KEY = "officiant.name";
     private static final String APP_PROPERTIES_OFFICIANT_EMAIL_KEY = "officiant.email";
@@ -27,13 +29,7 @@ public class ApplicationPropertiesManager {
     private final char csvDelimiter;
 
     public ApplicationPropertiesManager(Properties properties) {
-        Objects.requireNonNull(properties);
-
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream(APP_PROPERTIES_FILE_NAME));
-        } catch (IOException ioe) {
-            throw new RuntimeException(ioe);
-        }
+        super(APP_PROPERTIES_FILE_NAME, properties);
 
         this.officiantName = (String) properties.get(APP_PROPERTIES_OFFICIANT_NAME_KEY);
         this.officiantEmail = (String) properties.get(APP_PROPERTIES_OFFICIANT_EMAIL_KEY);
