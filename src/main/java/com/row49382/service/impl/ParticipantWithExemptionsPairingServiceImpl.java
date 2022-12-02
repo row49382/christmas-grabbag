@@ -39,22 +39,18 @@ public class ParticipantWithExemptionsPairingServiceImpl implements PairingServi
                     Participant receiver = candidateReceivers.remove(candidateIndex);
                     receiver.setPicked(true);
                     currentParticipant.setReceiver(receiver);
-
                 }
             }
 
-            if (this.participants.stream()
-                    .map(Participant::isPicked)
-                    .anyMatch(p -> p == false)) {
-                // One or more participant's only recipient options were an exemption
-                // we need to reroll again to make sure everyone gets a user without exemption.
+            if (this.participants.stream().anyMatch(p -> !p.isPicked())) {
+                // One or more participant's only remaining recipient options were an exemption.
+                // Re-roll again to make sure everyone has a non-exempt participant as their recipient.
                 this.participants.forEach(p -> {
                     p.setReceiver(null);
                     p.setPicked(false);
                 });
                 doesNeedReroll = true;
-            }
-            else {
+            } else {
                 doesNeedReroll = false;
             }
         } while (doesNeedReroll);
@@ -79,6 +75,6 @@ public class ParticipantWithExemptionsPairingServiceImpl implements PairingServi
     }
 
     private boolean isCandidateReceiverNotAnExemption(String[] exemptions, Participant candidateReceiver) {
-        return exemptions == null || !Arrays.stream(exemptions).anyMatch(e -> e.equals(candidateReceiver.getName()));
+        return exemptions == null || Arrays.stream(exemptions).noneMatch(e -> e.equals(candidateReceiver.getName()));
     }
 }
