@@ -7,8 +7,11 @@ import com.row49382.service.impl.CSVParticipantFileReader;
 import com.row49382.service.impl.CSVParticipantPairingExemptionsFileReader;
 import com.row49382.service.impl.ParticipantEmailingServiceImpl;
 import com.row49382.service.impl.ParticipantWithExemptionsPairingServiceImpl;
-import com.row49382.util.ApplicationPropertiesManager;
+import com.row49382.util.PropertiesManager;
+import com.row49382.util.impl.ApplicationPropertiesManager;
+import com.row49382.util.impl.MailPropertiesManager;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +27,9 @@ import java.util.Random;
  */
 public class Driver {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, MessagingException {
         ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager(new Properties());
+        PropertiesManager mailPropertiesManager = new MailPropertiesManager(new Properties());
 
         List<Participant> participants = loadParticipants(applicationPropertiesManager);
         Map<String, String[]> exemptionsByParticipantName = loadExemptions(applicationPropertiesManager);
@@ -38,7 +42,11 @@ public class Driver {
 
         pairingService.generatePairings();
 
-        EmailingService emailingService = new ParticipantEmailingServiceImpl(applicationPropertiesManager, participants);
+        EmailingService emailingService = new ParticipantEmailingServiceImpl(
+                applicationPropertiesManager,
+                mailPropertiesManager,
+                participants);
+
         emailingService.sendEmail();
     }
 
