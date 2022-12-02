@@ -40,6 +40,9 @@ public class Participant {
     @Override
     public String toString() {
         String receiverName = this.getReceiver() != null ? this.getReceiver().getName() : "null";
-        return String.format("%s has %s", this.getName(), receiverName);
+        return String.format(
+                "Hello %s, %n%nThank for participating in the grabbag! %n%nYou have %s as your recipient. %n%nHappy gifting!",
+                this.getName(),
+                receiverName);
     }
 }
