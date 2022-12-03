@@ -2,13 +2,11 @@ package com.row49382.util.impl;
 
 import com.row49382.util.PropertiesManager;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
 
 public class ApplicationPropertiesManager extends PropertiesManager {
     private static final String APP_PROPERTIES_FILE_NAME = "application.properties";
-    private static final String APP_PROPERTIES_OFFICIANT_NAME_KEY = "officiant.name";
     private static final String APP_PROPERTIES_OFFICIANT_EMAIL_KEY = "officiant.email";
     private static final String APP_PROPERTIES_APPLICATION_FROM_EMAIL_ADDRESS_KEY = "application.email.account.from_email";
     private static final String APP_PROPERTIES_APPLICATION_FROM_EMAIL_USERNAME_KEY = "application.email.account.username";
@@ -18,7 +16,6 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private static final String APP_PROPERTIES_PARTICIPANTS_CSV_FILE_NAME_KEY = "application.csv.participants.file_name";
     private static final String APP_PROPERTIES_CSV_DELIMITER_KEY = "application.csv.delimiter";
 
-    private final String officiantName;
     private final String officiantEmail;
     private final String applicationFromEmailAddress;
     private final String applicationFromEmailUserName;
@@ -31,7 +28,6 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     public ApplicationPropertiesManager(Properties properties) {
         super(APP_PROPERTIES_FILE_NAME, properties);
 
-        this.officiantName = (String) properties.get(APP_PROPERTIES_OFFICIANT_NAME_KEY);
         this.officiantEmail = (String) properties.get(APP_PROPERTIES_OFFICIANT_EMAIL_KEY);
         this.applicationFromEmailAddress = (String) properties.get(APP_PROPERTIES_APPLICATION_FROM_EMAIL_ADDRESS_KEY);
         this.applicationFromEmailUserName = (String) properties.get(APP_PROPERTIES_APPLICATION_FROM_EMAIL_USERNAME_KEY);
@@ -41,19 +37,12 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         this.participantsCSVFileName = (String) properties.get(APP_PROPERTIES_PARTICIPANTS_CSV_FILE_NAME_KEY);
         this.csvDelimiter = ((String) properties.get(APP_PROPERTIES_CSV_DELIMITER_KEY)).charAt(0);
 
-        Objects.requireNonNull(this.officiantName);
         Objects.requireNonNull(this.officiantEmail);
         Objects.requireNonNull(this.applicationFromEmailAddress);
         Objects.requireNonNull(this.applicationFromEmailUserName);
         Objects.requireNonNull(this.applicationFromEmailPassword);
         Objects.requireNonNull(this.exemptionsCSVFileName);
-        Objects.requireNonNull(this.exemptionsCSVNameExemptionsDelimiter);
         Objects.requireNonNull(this.participantsCSVFileName);
-        Objects.requireNonNull(this.csvDelimiter);
-    }
-
-    public String getOfficiantName() {
-        return officiantName;
     }
 
     public String getOfficiantEmail() {
