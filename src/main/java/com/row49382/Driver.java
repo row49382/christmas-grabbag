@@ -1,6 +1,7 @@
 package com.row49382;
 
 import com.row49382.domain.Participant;
+import com.row49382.exception.EmailServiceException;
 import com.row49382.service.EmailingService;
 import com.row49382.service.PairingService;
 import com.row49382.service.impl.CSVParticipantFileReader;
@@ -11,7 +12,6 @@ import com.row49382.util.PropertiesManager;
 import com.row49382.util.impl.ApplicationPropertiesManager;
 import com.row49382.util.impl.MailPropertiesManager;
 
-import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ import java.util.Random;
  */
 public class Driver {
 
-    public static void main(String[] args) throws IOException, MessagingException {
+    public static void main(String[] args) throws IOException, EmailServiceException {
         ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager(new Properties());
         PropertiesManager mailPropertiesManager = new MailPropertiesManager(new Properties());
 
