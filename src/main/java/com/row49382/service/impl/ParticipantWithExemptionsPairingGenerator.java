@@ -1,7 +1,7 @@
 package com.row49382.service.impl;
 
 import com.row49382.domain.Participant;
-import com.row49382.service.PairingService;
+import com.row49382.service.PairingGeneratable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class ParticipantWithExemptionsPairingServiceImpl implements PairingService {
+public class ParticipantWithExemptionsPairingGenerator implements PairingGeneratable {
     private final List<Participant> participants;
     private final Map<String, String[]> exemptionsByParticipantName;
     private final Random random;
 
-    public ParticipantWithExemptionsPairingServiceImpl(
+    public ParticipantWithExemptionsPairingGenerator(
             List<Participant> participants,
             Map<String, String[]> exemptionsByParticipantName,
             Random random) {
@@ -23,19 +23,22 @@ public class ParticipantWithExemptionsPairingServiceImpl implements PairingServi
         this.random = random;
     }
 
-    public void generatePairings() {
+    public void generate() {
         boolean doesNeedReroll;
 
         do {
             List<Participant> candidateReceivers = new ArrayList<>(this.participants);
 
-            for (int i = 0; i < this.participants.size(); i++) {
-                Participant currentParticipant = this.participants.get(i);
-                List<Integer> candidateIndexes =
-                        this.getCandidateIndexes(candidateReceivers, currentParticipant.getName());
+            for (Participant currentParticipant : this.participants) {
+                List<Integer> candidateReceiverIndexesForCurrentParticipant =
+                        this.getCandidateReceiverIndexesForCurrentParticipant(
+                                candidateReceivers,
+                                currentParticipant.getName());
 
-                if (!candidateIndexes.isEmpty()) {
-                    int candidateIndex = candidateIndexes.get(this.random.nextInt(candidateIndexes.size()));
+                if (!candidateReceiverIndexesForCurrentParticipant.isEmpty()) {
+                    int candidateIndex = candidateReceiverIndexesForCurrentParticipant.get(
+                            this.random.nextInt(candidateReceiverIndexesForCurrentParticipant.size()));
+                    
                     Participant receiver = candidateReceivers.remove(candidateIndex);
                     receiver.setPicked(true);
                     currentParticipant.setReceiver(receiver);
@@ -56,7 +59,7 @@ public class ParticipantWithExemptionsPairingServiceImpl implements PairingServi
         } while (doesNeedReroll);
     }
 
-    private List<Integer> getCandidateIndexes(
+    private List<Integer> getCandidateReceiverIndexesForCurrentParticipant(
             List<Participant> candidateReceivers,
             String participantName) {
         String[] exemptions = this.exemptionsByParticipantName.get(participantName);
@@ -64,7 +67,7 @@ public class ParticipantWithExemptionsPairingServiceImpl implements PairingServi
 
         for (int i = 0; i < candidateReceivers.size(); i++) {
             final Participant currCandidateReceiver = candidateReceivers.get(i);
-            if (!participantName.equals(currCandidateReceiver.getName()) &&
+            if (this.isCandidateReceiverNotSameAsParticipant(participantName, currCandidateReceiver.getName()) &&
                 !currCandidateReceiver.isPicked() &&
                 this.isCandidateReceiverNotAnExemption(exemptions, currCandidateReceiver)) {
                 candidateIndexes.add(i);
@@ -72,6 +75,10 @@ public class ParticipantWithExemptionsPairingServiceImpl implements PairingServi
         }
 
         return candidateIndexes;
+    }
+
+    private boolean isCandidateReceiverNotSameAsParticipant(String participantName, String currCandidateReceiverName) {
+        return !participantName.equals(currCandidateReceiverName);
     }
 
     private boolean isCandidateReceiverNotAnExemption(String[] exemptions, Participant candidateReceiver) {
