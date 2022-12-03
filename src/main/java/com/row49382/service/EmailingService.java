@@ -1,7 +1,7 @@
 package com.row49382.service;
 
-import javax.mail.MessagingException;
+import com.row49382.exception.EmailServiceException;
 
 public interface EmailingService {
-    void sendEmail() throws MessagingException;
+    void sendEmail() throws EmailServiceException;
 }
