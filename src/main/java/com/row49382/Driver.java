@@ -2,12 +2,12 @@ package com.row49382;
 
 import com.row49382.domain.Participant;
 import com.row49382.exception.EmailServiceException;
-import com.row49382.service.EmailingService;
-import com.row49382.service.PairingService;
+import com.row49382.service.Emailable;
+import com.row49382.service.PairingGeneratable;
 import com.row49382.service.impl.CSVParticipantFileReader;
-import com.row49382.service.impl.CSVParticipantPairingExemptionsFileReader;
+import com.row49382.service.impl.CSVParticipantExemptionsFileReader;
 import com.row49382.service.impl.ParticipantEmailingServiceImpl;
-import com.row49382.service.impl.ParticipantWithExemptionsPairingServiceImpl;
+import com.row49382.service.impl.ParticipantWithExemptionsPairingGenerator;
 import com.row49382.util.PropertiesManager;
 import com.row49382.util.impl.ApplicationPropertiesManager;
 import com.row49382.util.impl.MailPropertiesManager;
@@ -34,25 +34,25 @@ public class Driver {
         List<Participant> participants = loadParticipants(applicationPropertiesManager);
         Map<String, String[]> exemptionsByParticipantName = loadExemptions(applicationPropertiesManager);
 
-        PairingService pairingService =
-                new ParticipantWithExemptionsPairingServiceImpl(
+        PairingGeneratable pairingGeneratable =
+                new ParticipantWithExemptionsPairingGenerator(
                         participants,
                         exemptionsByParticipantName,
                         new Random());
 
-        pairingService.generatePairings();
+        pairingGeneratable.generate();
 
-        EmailingService emailingService = new ParticipantEmailingServiceImpl(
+        Emailable emailingService = new ParticipantEmailingServiceImpl(
                 applicationPropertiesManager,
                 mailPropertiesManager,
                 participants);
 
-        emailingService.sendEmail();
+        emailingService.send();
     }
 
     private static Map<String, String[]> loadExemptions(ApplicationPropertiesManager applicationPropertiesManager)
             throws IOException {
-        return new CSVParticipantPairingExemptionsFileReader(
+        return new CSVParticipantExemptionsFileReader(
                 applicationPropertiesManager.getExemptionsCSVFileName(),
                 applicationPropertiesManager.getCsvDelimiter(),
                 applicationPropertiesManager.getExemptionsCSVNameExemptionsDelimiter()).read();
