@@ -2,7 +2,7 @@ package com.row49382.service.impl;
 
 import com.row49382.domain.Participant;
 import com.row49382.exception.EmailServiceException;
-import com.row49382.service.EmailingService;
+import com.row49382.service.Emailable;
 import com.row49382.util.PropertiesManager;
 import com.row49382.util.impl.ApplicationPropertiesManager;
 
@@ -19,7 +19,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.util.List;
 
-public class ParticipantEmailingServiceImpl implements EmailingService {
+public class ParticipantEmailingServiceImpl implements Emailable {
     /**
      * Message template to be sent to all participants.
      *
@@ -49,7 +49,7 @@ public class ParticipantEmailingServiceImpl implements EmailingService {
         this.mailPropertiesManager = mailPropertiesManager;
     }
 
-    public void sendEmail() throws EmailServiceException {
+    public void send() throws EmailServiceException {
         Session session = this.getSession();
 
         for (Participant participant : this.participants) {
