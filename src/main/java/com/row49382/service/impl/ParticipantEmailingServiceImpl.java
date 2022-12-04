@@ -32,6 +32,7 @@ public class ParticipantEmailingServiceImpl implements Emailable {
             "Thank for participating in the grab-bag! <br /><br />" +
             "You have %s as your recipient. <br /><br />" +
             "Happy gifting!";
+
     private static final String GRABBAG_SUBJECT_MESSAGE_TEMPLATE = "Grab-bag Selection for %s";
     private static final String MIME_TYPE_TEXT_HTML_CHARSET_UTF8 = "text/html; charset=utf-8";
     private static final String GRABBAG_EMAIL_ERROR_MESSAGE_TEMPLATE = "Error occurred while sending message to %s's email: %s";

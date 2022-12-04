@@ -4,14 +4,18 @@ import com.row49382.domain.Participant;
 import com.row49382.exception.PairingGenerateException;
 import com.row49382.service.PairingGeneratable;
 import com.row49382.util.impl.ApplicationPropertiesManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class ParticipantWithExemptionsPairingGenerator implements PairingGeneratable {
+    private static final Logger LOG = LoggerFactory.getLogger(ParticipantWithExemptionsPairingGenerator.class);
     private static final String MAX_RETRY_COUNT_EXCEEDED_ERROR_MESSAGE_TEMPLATE =
             "Maximum number of retries of %d was exceeded for attempting to generate random pairings. " +
             "Please review participants and exemptions to make sure this is not an impossible pairing scenario.";
@@ -38,13 +42,6 @@ public class ParticipantWithExemptionsPairingGenerator implements PairingGenerat
         int rerollCount = 0;
 
         do {
-            if (rerollCount == this.applicationPropertiesManager.getPairingMaxRetryCount()) {
-                throw new PairingGenerateException(
-                        String.format(
-                                MAX_RETRY_COUNT_EXCEEDED_ERROR_MESSAGE_TEMPLATE,
-                                this.applicationPropertiesManager.getPairingMaxRetryCount()));
-            }
-
             List<Participant> candidateReceivers = new ArrayList<>(this.participants);
 
             for (Participant currentParticipant : this.participants) {
@@ -71,11 +68,22 @@ public class ParticipantWithExemptionsPairingGenerator implements PairingGenerat
                     p.setPicked(false);
                 });
                 doesNeedReroll = true;
-                rerollCount++;
+                LOG.debug("Rerolling pairing generation. Count: {}", ++rerollCount);
             } else {
                 doesNeedReroll = false;
             }
+
+            if (rerollCount == this.applicationPropertiesManager.getPairingMaxRetryCount()) {
+                throw new PairingGenerateException(
+                        String.format(
+                                MAX_RETRY_COUNT_EXCEEDED_ERROR_MESSAGE_TEMPLATE,
+                                this.applicationPropertiesManager.getPairingMaxRetryCount()));
+            }
         } while (doesNeedReroll);
+
+        LOG.debug("Final pairings: {}{}", System.lineSeparator(), this.participants.stream()
+                        .map(Participant::toString)
+                        .collect(Collectors.joining(System.lineSeparator())));
     }
 
     private List<Integer> getCandidateReceiverIndexesForCurrentParticipant(

@@ -9,9 +9,12 @@ import com.row49382.service.impl.CSVParticipantFileReader;
 import com.row49382.service.impl.CSVParticipantExemptionsFileReader;
 import com.row49382.service.impl.ParticipantEmailingServiceImpl;
 import com.row49382.service.impl.ParticipantWithExemptionsPairingGenerator;
+import com.row49382.util.LogbackConfiguration;
 import com.row49382.util.PropertiesManager;
 import com.row49382.util.impl.ApplicationPropertiesManager;
 import com.row49382.util.impl.MailPropertiesManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,11 +30,12 @@ import java.util.Random;
  * @since 1.0
  */
 public class Driver {
+    private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 
-    public static void main(String[] args) throws
-            IOException, EmailServiceException, PairingGenerateException {
+    public static void main(String[] args) throws IOException {
         ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager(new Properties());
         PropertiesManager mailPropertiesManager = new MailPropertiesManager(new Properties());
+        LogbackConfiguration.setLevel(applicationPropertiesManager.getLogLevel());
 
         List<Participant> participants = loadParticipants(applicationPropertiesManager);
         Map<String, String[]> exemptionsByParticipantName = loadExemptions(applicationPropertiesManager);
@@ -43,14 +47,19 @@ public class Driver {
                         new Random(),
                         applicationPropertiesManager);
 
-        pairingGenerator.generate();
-
         Emailable emailingService = new ParticipantEmailingServiceImpl(
                 applicationPropertiesManager,
                 mailPropertiesManager,
                 participants);
 
-        emailingService.send();
+        try {
+            pairingGenerator.generate();
+            emailingService.send();
+        } catch (PairingGenerateException pge) {
+            LOG.debug("Error occurred while attempting to generate pairings: {}", pge.getMessage());
+        } catch (EmailServiceException ese) {
+            LOG.debug("Error occurred while attempting to send emails out: {}", ese.getMessage());
+        }
     }
 
     private static Map<String, String[]> loadExemptions(ApplicationPropertiesManager applicationPropertiesManager)

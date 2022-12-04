@@ -16,6 +16,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private static final String APP_PROPERTIES_PARTICIPANTS_CSV_FILE_NAME_KEY = "application.csv.participants.file_name";
     private static final String APP_PROPERTIES_CSV_DELIMITER_KEY = "application.csv.delimiter";
     private static final String APP_PROPERTIES_PAIRING_MAX_RETRY_COUNT_KEY = "application.pairing.maxretrycount";
+    private static final String APP_PROPERTIES_LOG_LEVEL_KEY = "application.log.level";
 
     private final String officiantEmail;
     private final String applicationFromEmailAddress;
@@ -26,6 +27,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private final String participantsCSVFileName;
     private final char csvDelimiter;
     private final int pairingMaxRetryCount;
+    private final String logLevel;
 
     public ApplicationPropertiesManager(Properties properties) {
         super(APP_PROPERTIES_FILE_NAME, properties);
@@ -39,6 +41,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         this.participantsCSVFileName = (String) properties.get(APP_PROPERTIES_PARTICIPANTS_CSV_FILE_NAME_KEY);
         this.csvDelimiter = ((String) properties.get(APP_PROPERTIES_CSV_DELIMITER_KEY)).charAt(0);
         this.pairingMaxRetryCount = Integer.parseInt((String) properties.get(APP_PROPERTIES_PAIRING_MAX_RETRY_COUNT_KEY));
+        this.logLevel = (String) properties.get(APP_PROPERTIES_LOG_LEVEL_KEY);
 
         Objects.requireNonNull(this.officiantEmail);
         Objects.requireNonNull(this.applicationFromEmailAddress);
@@ -46,6 +49,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         Objects.requireNonNull(this.applicationFromEmailPassword);
         Objects.requireNonNull(this.exemptionsCSVFileName);
         Objects.requireNonNull(this.participantsCSVFileName);
+        Objects.requireNonNull(this.logLevel);
     }
 
     public String getOfficiantEmail() {
@@ -82,5 +86,9 @@ public class ApplicationPropertiesManager extends PropertiesManager {
 
     public int getPairingMaxRetryCount() {
         return pairingMaxRetryCount;
+    }
+
+    public String getLogLevel() {
+        return logLevel;
     }
 }
