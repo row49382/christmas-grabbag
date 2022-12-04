@@ -56,9 +56,9 @@ public class Driver {
             pairingGenerator.generate();
             emailingService.send();
         } catch (PairingGenerateException pge) {
-            LOG.debug("Error occurred while attempting to generate pairings: {}", pge.getMessage());
+            LOG.error("Error occurred while attempting to generate pairings: {}", pge.getMessage());
         } catch (EmailServiceException ese) {
-            LOG.debug("Error occurred while attempting to send emails out: {}", ese.getMessage());
+            LOG.error("Error occurred while attempting to send emails out: {}", ese.getMessage());
         }
     }
 
