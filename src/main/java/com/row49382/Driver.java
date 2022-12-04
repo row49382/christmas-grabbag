@@ -2,6 +2,7 @@ package com.row49382;
 
 import com.row49382.domain.Participant;
 import com.row49382.exception.EmailServiceException;
+import com.row49382.exception.PairingGenerateException;
 import com.row49382.service.Emailable;
 import com.row49382.service.PairingGeneratable;
 import com.row49382.service.impl.CSVParticipantFileReader;
@@ -27,7 +28,8 @@ import java.util.Random;
  */
 public class Driver {
 
-    public static void main(String[] args) throws IOException, EmailServiceException {
+    public static void main(String[] args) throws
+            IOException, EmailServiceException, PairingGenerateException {
         ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager(new Properties());
         PropertiesManager mailPropertiesManager = new MailPropertiesManager(new Properties());
 
@@ -38,7 +40,8 @@ public class Driver {
                 new ParticipantWithExemptionsPairingGenerator(
                         participants,
                         exemptionsByParticipantName,
-                        new Random());
+                        new Random(),
+                        applicationPropertiesManager);
 
         pairingGenerator.generate();
 

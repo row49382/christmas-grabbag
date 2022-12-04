@@ -15,6 +15,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private static final String APPLICATION_CSV_EXEMPTIONS_NAME_EXEMPTIONS_DELIMITER = "application.csv.exemptions.name_exemptions_delimiter";
     private static final String APP_PROPERTIES_PARTICIPANTS_CSV_FILE_NAME_KEY = "application.csv.participants.file_name";
     private static final String APP_PROPERTIES_CSV_DELIMITER_KEY = "application.csv.delimiter";
+    private static final String APP_PROPERTIES_PAIRING_MAX_RETRY_COUNT_KEY = "application.pairing.maxretrycount";
 
     private final String officiantEmail;
     private final String applicationFromEmailAddress;
@@ -24,6 +25,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private final char exemptionsCSVNameExemptionsDelimiter;
     private final String participantsCSVFileName;
     private final char csvDelimiter;
+    private final int pairingMaxRetryCount;
 
     public ApplicationPropertiesManager(Properties properties) {
         super(APP_PROPERTIES_FILE_NAME, properties);
@@ -36,6 +38,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         this.exemptionsCSVNameExemptionsDelimiter = ((String) properties.get(APPLICATION_CSV_EXEMPTIONS_NAME_EXEMPTIONS_DELIMITER)).charAt(0);
         this.participantsCSVFileName = (String) properties.get(APP_PROPERTIES_PARTICIPANTS_CSV_FILE_NAME_KEY);
         this.csvDelimiter = ((String) properties.get(APP_PROPERTIES_CSV_DELIMITER_KEY)).charAt(0);
+        this.pairingMaxRetryCount = Integer.parseInt((String) properties.get(APP_PROPERTIES_PAIRING_MAX_RETRY_COUNT_KEY));
 
         Objects.requireNonNull(this.officiantEmail);
         Objects.requireNonNull(this.applicationFromEmailAddress);
@@ -75,5 +78,9 @@ public class ApplicationPropertiesManager extends PropertiesManager {
 
     public char getCsvDelimiter() {
         return csvDelimiter;
+    }
+
+    public int getPairingMaxRetryCount() {
+        return pairingMaxRetryCount;
     }
 }
