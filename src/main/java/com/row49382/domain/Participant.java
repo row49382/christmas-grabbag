@@ -1,5 +1,7 @@
 package com.row49382.domain;
 
+import java.util.Objects;
+
 public class Participant {
     private final String name;
     private final String email;
@@ -44,5 +46,24 @@ public class Participant {
                 "%s has %s",
                 this.getName(),
                 receiverName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Participant that = (Participant) o;
+        return Objects.equals(this.name, that.name) && Objects.equals(this.email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name, this.email);
     }
 }
