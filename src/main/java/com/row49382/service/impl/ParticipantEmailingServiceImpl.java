@@ -58,7 +58,6 @@ public class ParticipantEmailingServiceImpl implements Emailable {
 
             try {
                 message.setFrom(new InternetAddress(this.applicationPropertiesManager.getApplicationFromEmailAddress()));
-
                 message.setContent(this.createMultipart(message, participant));
                 Transport.send(message);
             } catch (MessagingException me) {
@@ -91,10 +90,8 @@ public class ParticipantEmailingServiceImpl implements Emailable {
         message.setSubject(String.format(GRABBAG_SUBJECT_MESSAGE_TEMPLATE, participant.getName()));
         message.setRecipients(
                 Message.RecipientType.TO,
-                InternetAddress.parse(String.join(
-                                ",",
-                                participant.getEmail(),
-                                this.applicationPropertiesManager.getOfficiantEmail())));
+                InternetAddress.parse(
+                        String.join(",", participant.getEmail(), this.applicationPropertiesManager.getOfficiantEmail())));
 
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(

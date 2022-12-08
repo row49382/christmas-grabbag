@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class ParticipantWithExemptionsPairingGenerator implements PairingGeneratable {
     private static final Logger LOG = LoggerFactory.getLogger(ParticipantWithExemptionsPairingGenerator.class);
     private static final String MAX_RETRY_COUNT_EXCEEDED_ERROR_MESSAGE_TEMPLATE =
-            "Maximum number of retries of %d was exceeded for attempting to generate random pairings. " +
+            "Maximum number of retries of %d was exceeded for attempting to generate random pairings. %n" +
             "Please review participants and exemptions to make sure this is not an impossible pairing scenario.";
 
     private final List<Participant> participants;
@@ -94,7 +94,7 @@ public class ParticipantWithExemptionsPairingGenerator implements PairingGenerat
 
         for (int i = 0; i < candidateReceivers.size(); i++) {
             final Participant currCandidateReceiver = candidateReceivers.get(i);
-            if (this.isCandidateReceiverNotSameAsParticipant(participantName, currCandidateReceiver.getName()) &&
+            if (this.isCandidateReceiverNotParticipant(participantName, currCandidateReceiver.getName()) &&
                 !currCandidateReceiver.isPicked() &&
                 this.isCandidateReceiverNotAnExemption(exemptions, currCandidateReceiver)) {
                 candidateIndexes.add(i);
@@ -104,7 +104,7 @@ public class ParticipantWithExemptionsPairingGenerator implements PairingGenerat
         return candidateIndexes;
     }
 
-    private boolean isCandidateReceiverNotSameAsParticipant(String participantName, String currCandidateReceiverName) {
+    private boolean isCandidateReceiverNotParticipant(String participantName, String currCandidateReceiverName) {
         return !participantName.equals(currCandidateReceiverName);
     }
 
