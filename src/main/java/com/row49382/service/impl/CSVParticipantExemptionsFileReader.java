@@ -28,7 +28,7 @@ public class CSVParticipantExemptionsFileReader extends CSVFileReader<Map<String
     }
 
     @Override
-    public void readLine(String line) {
+    public void loadLine(String line) {
         String[] lineData = line.split(Character.toString(this.delimiter));
         String name = lineData[0];
         String[] exemptions = lineData[1].split(Character.toString(this.exemptionsDelimiter));

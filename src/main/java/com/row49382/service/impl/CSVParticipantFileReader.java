@@ -23,7 +23,7 @@ public class CSVParticipantFileReader extends CSVFileReader<List<Participant>> {
     }
 
     @Override
-    public void readLine(String line) {
+    public void loadLine(String line) {
         String[] lineData = line.split(Character.toString(this.delimiter));
         String name = lineData[0];
         String email = lineData[1];
