@@ -19,7 +19,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.util.List;
 
-public class ParticipantEmailingServiceImpl implements Emailable {
+public class ParticipantJavaxMailEmailImpl implements Emailable {
     /**
      * Message template to be sent to all participants.
      *
@@ -41,7 +41,7 @@ public class ParticipantEmailingServiceImpl implements Emailable {
     private final ApplicationPropertiesManager applicationPropertiesManager;
     private final PropertiesManager mailPropertiesManager;
 
-    public ParticipantEmailingServiceImpl(
+    public ParticipantJavaxMailEmailImpl(
             ApplicationPropertiesManager applicationPropertiesManager,
             PropertiesManager mailPropertiesManager,
             List<Participant> participants) {

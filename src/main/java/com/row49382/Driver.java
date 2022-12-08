@@ -7,7 +7,7 @@ import com.row49382.service.Emailable;
 import com.row49382.service.PairingGeneratable;
 import com.row49382.service.impl.CSVParticipantFileReader;
 import com.row49382.service.impl.CSVParticipantExemptionsFileReader;
-import com.row49382.service.impl.ParticipantEmailingServiceImpl;
+import com.row49382.service.impl.ParticipantJavaxMailEmailImpl;
 import com.row49382.service.impl.ParticipantWithExemptionsPairingGenerator;
 import com.row49382.util.LogbackConfiguration;
 import com.row49382.util.PropertiesManager;
@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Random;
 
 /**
@@ -47,7 +46,7 @@ public class Driver {
                         new Random(),
                         applicationPropertiesManager);
 
-        Emailable emailingService = new ParticipantEmailingServiceImpl(
+        Emailable emailingService = new ParticipantJavaxMailEmailImpl(
                 applicationPropertiesManager,
                 mailPropertiesManager,
                 participants);

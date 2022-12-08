@@ -26,7 +26,7 @@ public class CSVParticipantExemptionsFileReaderTest extends CSVFileReaderTest<Ma
     @Override
     public void testExpectedCSVIsLoaded() throws IOException {
         Map<String, String[]> expected = Map.of(
-                "name1", new String[]{ "name2", "name3", "name4" },
+                "name1", new String[] { "name2", "name3", "name4" },
                 "name2", new String[] { "name1" });
 
         Map<String, String[]> actual = this.csvFileReader.read();
