@@ -14,6 +14,7 @@ public class CSVParticipantFileReader extends CSVFileReader<List<Participant>> {
         this.data = new ArrayList<>();
     }
 
+    @Override
     public List<Participant> read() throws IOException {
         if (this.isDataLoaded()) {
             return this.data;

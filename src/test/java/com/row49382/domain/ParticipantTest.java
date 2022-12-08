@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ParticipantTest {
+class ParticipantTest {
     private static Stream<Arguments> getToStringExpectedStringAndReceiverArguments() {
         return Stream.of(
                 Arguments.of("name has null", null),
@@ -37,7 +37,7 @@ public class ParticipantTest {
     }
 
     @Test
-    public void testGettersReturnFields() {
+    void testGettersReturnFields() {
         assertEquals(this.name, this.participant.getName());
         assertEquals(this.email, this.participant.getEmail());
         assertFalse(this.participant.isPicked());
@@ -45,7 +45,7 @@ public class ParticipantTest {
     }
 
     @Test
-    public void testSetReceiverReturnsValueFromGetter() {
+    void testSetReceiverReturnsValueFromGetter() {
         Participant receiver = new Participant("name1", this.email);
         this.participant.setReceiver(receiver);
 
@@ -53,7 +53,7 @@ public class ParticipantTest {
     }
 
     @Test
-    public void testSetPickedReturnsValueFromGetter() {
+    void testSetPickedReturnsValueFromGetter() {
         this.participant.setPicked(true);
 
         assertTrue(this.participant.isPicked());
@@ -61,14 +61,14 @@ public class ParticipantTest {
 
     @ParameterizedTest
     @MethodSource("getToStringExpectedStringAndReceiverArguments")
-    public void testToStringReturnsExpectedString(String expected, Participant receiver) {
+    void testToStringReturnsExpectedString(String expected, Participant receiver) {
         this.participant.setReceiver(receiver);
         assertEquals(expected, this.participant.toString());
     }
 
     @ParameterizedTest
     @MethodSource("getCompareToParticipantsAndIsZeroResultArguments")
-    public void testCompareToExpectations(Participant a, Participant b, boolean areEqual) {
+    void testCompareToExpectations(Participant a, Participant b, boolean areEqual) {
         if (areEqual) {
             assertEquals(a, b);
         } else {

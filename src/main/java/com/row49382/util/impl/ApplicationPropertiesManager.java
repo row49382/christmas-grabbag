@@ -3,7 +3,6 @@ package com.row49382.util.impl;
 import com.row49382.util.PropertiesManager;
 
 import java.util.Objects;
-import java.util.Properties;
 
 public class ApplicationPropertiesManager extends PropertiesManager {
     private static final String APP_PROPERTIES_FILE_NAME = "application.properties";
