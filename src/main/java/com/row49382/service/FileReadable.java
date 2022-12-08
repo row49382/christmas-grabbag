@@ -4,4 +4,5 @@ import java.io.IOException;
 
 public interface FileReadable<T> {
     T read() throws IOException;
+    boolean exists();
 }

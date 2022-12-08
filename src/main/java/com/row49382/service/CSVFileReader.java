@@ -16,6 +16,10 @@ public abstract class CSVFileReader<T> implements FileReadable<T> {
 
     @Override
     public T read() throws IOException {
+        if (!exists()) {
+            throw new IOException(String.format("File %s was not found in resources folder", this.fileName));
+        }
+
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(getClass().getClassLoader().getResourceAsStream(this.fileName)))) {
             String line;
@@ -27,14 +31,19 @@ public abstract class CSVFileReader<T> implements FileReadable<T> {
                     continue;
                 }
 
-                this.readLine(line);
+                this.loadLine(line);
             }
         }
 
         return this.data;
     }
 
-    protected abstract void readLine(String line);
+    @Override
+    public boolean exists() {
+        return getClass().getClassLoader().getResource(this.fileName) != null;
+    }
+
+    protected abstract void loadLine(String line);
 
     protected abstract boolean isDataLoaded();
 }
