@@ -29,8 +29,8 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private final int pairingMaxRetryCount;
     private final String logLevel;
 
-    public ApplicationPropertiesManager(Properties properties) {
-        super(APP_PROPERTIES_FILE_NAME, properties);
+    public ApplicationPropertiesManager() {
+        super(APP_PROPERTIES_FILE_NAME);
 
         this.officiantEmail = (String) properties.get(APP_PROPERTIES_OFFICIANT_EMAIL_KEY);
         this.applicationFromEmailAddress = (String) properties.get(APP_PROPERTIES_APPLICATION_FROM_EMAIL_ADDRESS_KEY);

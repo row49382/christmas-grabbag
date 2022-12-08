@@ -7,11 +7,10 @@ import java.util.Properties;
 public abstract class PropertiesManager {
     protected final Properties properties;
 
-    protected PropertiesManager(String propertiesFileName, Properties properties) {
+    protected PropertiesManager(String propertiesFileName) {
         Objects.requireNonNull(propertiesFileName);
-        Objects.requireNonNull(properties);
 
-        this.properties = properties;
+        this.properties = new Properties();
 
         try {
             this.properties.load(getClass().getClassLoader().getResourceAsStream(propertiesFileName));

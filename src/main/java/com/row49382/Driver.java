@@ -33,8 +33,8 @@ public class Driver {
     private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 
     public static void main(String[] args) throws IOException {
-        ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager(new Properties());
-        PropertiesManager mailPropertiesManager = new MailPropertiesManager(new Properties());
+        ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager();
+        PropertiesManager mailPropertiesManager = new MailPropertiesManager();
         LogbackConfiguration.setLevel(applicationPropertiesManager.getLogLevel());
 
         List<Participant> participants = loadParticipants(applicationPropertiesManager);
