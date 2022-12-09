@@ -39,12 +39,11 @@ public class Driver {
         List<Participant> participants = loadParticipants(applicationPropertiesManager);
         Map<String, String[]> exemptionsByParticipantName = loadExemptions(applicationPropertiesManager);
 
-        PairingGeneratable pairingGenerator =
-                new ParticipantWithExemptionsPairingGenerator(
-                        participants,
-                        exemptionsByParticipantName,
-                        new Random(),
-                        applicationPropertiesManager);
+        PairingGeneratable pairingGenerator = new ParticipantWithExemptionsPairingGenerator(
+                participants,
+                exemptionsByParticipantName,
+                new Random(),
+                applicationPropertiesManager);
 
         Emailable emailingService = new ParticipantJavaxMailEmailImpl(
                 applicationPropertiesManager,
