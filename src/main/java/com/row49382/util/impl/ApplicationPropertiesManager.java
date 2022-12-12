@@ -16,6 +16,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private static final String APP_PROPERTIES_CSV_DELIMITER_KEY = "application.csv.delimiter";
     private static final String APP_PROPERTIES_PAIRING_MAX_RETRY_COUNT_KEY = "application.pairing.maxretrycount";
     private static final String APP_PROPERTIES_LOG_LEVEL_KEY = "application.log.level";
+    private static final String APP_PROPERTIES_EMAIL_DO_SEND_KEY = "application.email.do_send";
 
     private final String officiantEmail;
     private final String applicationFromEmailAddress;
@@ -27,6 +28,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private final char csvDelimiter;
     private final int pairingMaxRetryCount;
     private final String logLevel;
+    private final boolean sendEmail;
 
     public ApplicationPropertiesManager() {
         super(APP_PROPERTIES_FILE_NAME);
@@ -41,6 +43,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         this.csvDelimiter = ((String) properties.get(APP_PROPERTIES_CSV_DELIMITER_KEY)).charAt(0);
         this.pairingMaxRetryCount = Integer.parseInt((String) properties.get(APP_PROPERTIES_PAIRING_MAX_RETRY_COUNT_KEY));
         this.logLevel = (String) properties.get(APP_PROPERTIES_LOG_LEVEL_KEY);
+        this.sendEmail = Boolean.parseBoolean((String) properties.get(APP_PROPERTIES_EMAIL_DO_SEND_KEY));
 
         Objects.requireNonNull(this.officiantEmail);
         Objects.requireNonNull(this.applicationFromEmailAddress);
@@ -89,5 +92,9 @@ public class ApplicationPropertiesManager extends PropertiesManager {
 
     public String getLogLevel() {
         return logLevel;
+    }
+
+    public boolean isSendEmail() {
+        return sendEmail;
     }
 }
