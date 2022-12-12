@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -89,5 +90,10 @@ class InvokerTest {
         verify(this.pairingGenerator).generate();
         verify(this.applicationPropertiesManager, never()).isSendEmail();
         verify(this.emailingService, never()).send();
+    }
+
+    @Test
+    void failTest() {
+        fail();
     }
 }
