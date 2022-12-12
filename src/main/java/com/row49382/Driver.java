@@ -1,6 +1,7 @@
 package com.row49382;
 
 import com.row49382.domain.Participant;
+import com.row49382.exception.DriverExecutionException;
 import com.row49382.exception.EmailServiceException;
 import com.row49382.exception.PairingGenerateException;
 import com.row49382.service.Emailable;
@@ -31,36 +32,73 @@ import java.util.Random;
 public class Driver {
     private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 
-    public static void main(String[] args) throws IOException {
-        ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager();
-        PropertiesManager mailPropertiesManager = new MailPropertiesManager();
-        LogbackConfiguration.setLevel(applicationPropertiesManager.getLogLevel());
+    private final ApplicationPropertiesManager applicationPropertiesManager;
+    private final PropertiesManager mailPropertiesManager;
+    private final PairingGeneratable pairingGenerator;
+    private final Emailable emailingService;
+    private final List<Participant> participants;
 
-        List<Participant> participants = loadParticipants(applicationPropertiesManager);
-        Map<String, String[]> exemptionsByParticipantName = loadExemptions(applicationPropertiesManager);
+    private Driver() throws IOException {
+        this.applicationPropertiesManager = new ApplicationPropertiesManager();
+        this.mailPropertiesManager = new MailPropertiesManager();
 
-        PairingGeneratable pairingGenerator = new ParticipantWithExemptionsPairingGenerator(
+        this.participants = loadParticipants(this.applicationPropertiesManager);
+        Map<String, String[]> exemptionsByParticipantName = loadExemptions(this.applicationPropertiesManager);
+
+       this.pairingGenerator = new ParticipantWithExemptionsPairingGenerator(
                 participants,
                 exemptionsByParticipantName,
                 new Random(),
                 applicationPropertiesManager);
 
-        try {
-            Emailable emailingService = new ParticipantJavaxMailEmailImpl(
-                    applicationPropertiesManager,
-                    mailPropertiesManager,
-                    participants);
+       this.emailingService = new ParticipantJavaxMailEmailImpl(
+                this.applicationPropertiesManager,
+                this.mailPropertiesManager,
+                this.participants);
+    }
 
-            pairingGenerator.generate();
-            emailingService.send();
+    public static Driver getDriver() throws IOException {
+        return new Driver();
+    }
+
+    public static void main(String[] args) throws IOException, DriverExecutionException {
+        Driver app = getDriver();
+        LogbackConfiguration.setLevel(app.getApplicationPropertiesManager().getLogLevel());
+
+        try {
+            app.getPairingGenerator().generate();
+
+            if (app.getApplicationPropertiesManager().isSendEmail()) {
+                app.getEmailingService().send();
+            } else {
+                LOG.debug("Flag to send emails was disabled in applications.properties. No emails were sent.");
+            }
         } catch (PairingGenerateException pge) {
             LOG.error("Error occurred while attempting to generate pairings: {}", pge.getMessage());
+            throw new DriverExecutionException();
         } catch (EmailServiceException ese) {
             LOG.error("Error occurred: {}", ese.getMessage());
+            throw new DriverExecutionException();
         }
     }
 
-    private static Map<String, String[]> loadExemptions(ApplicationPropertiesManager applicationPropertiesManager)
+    public ApplicationPropertiesManager getApplicationPropertiesManager() {
+        return applicationPropertiesManager;
+    }
+
+    public PairingGeneratable getPairingGenerator() {
+        return pairingGenerator;
+    }
+
+    public Emailable getEmailingService() {
+        return emailingService;
+    }
+
+    public List<Participant> getParticipants() {
+        return participants;
+    }
+
+    private Map<String, String[]> loadExemptions(ApplicationPropertiesManager applicationPropertiesManager)
             throws IOException {
         return new CSVParticipantExemptionsFileReader(
                 applicationPropertiesManager.getExemptionsCSVFileName(),
@@ -68,7 +106,7 @@ public class Driver {
                 applicationPropertiesManager.getExemptionsCSVNameExemptionsDelimiter()).read();
     }
 
-    private static List<Participant> loadParticipants(ApplicationPropertiesManager applicationPropertiesManager)
+    private List<Participant> loadParticipants(ApplicationPropertiesManager applicationPropertiesManager)
             throws IOException {
         return new CSVParticipantFileReader(
                 applicationPropertiesManager.getParticipantsCSVFileName(),
