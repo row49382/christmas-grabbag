@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class CSVParticipantFileReaderTest extends CSVFileReaderTest<List<Participant>> {
-    private static final String CSV_FILE_NAME = "participants-test.csv";
+    private static final String CSV_FILE_NAME = "participants-test-multiple.csv";
     private static final char DEFAULT_DELIMITER = ',';
 
     @BeforeEach

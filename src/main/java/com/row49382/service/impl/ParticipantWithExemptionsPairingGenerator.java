@@ -23,7 +23,7 @@ public class ParticipantWithExemptionsPairingGenerator implements PairingGenerat
     private final List<Participant> participants;
     private final Map<String, String[]> exemptionsByParticipantName;
     private final Random random;
-    private ApplicationPropertiesManager applicationPropertiesManager;
+    private final ApplicationPropertiesManager applicationPropertiesManager;
 
     public ParticipantWithExemptionsPairingGenerator(
             List<Participant> participants,
@@ -81,9 +81,13 @@ public class ParticipantWithExemptionsPairingGenerator implements PairingGenerat
             }
         } while (doesNeedReroll);
 
-        LOG.debug("Final pairings: {}{}", System.lineSeparator(), this.participants.stream()
-                        .map(Participant::toString)
-                        .collect(Collectors.joining(System.lineSeparator())));
+        if (LOG.isDebugEnabled()) {
+            String finalPairings = this.participants.stream()
+                    .map(Participant::toString)
+                    .collect(Collectors.joining(System.lineSeparator()));
+
+            LOG.debug("Final pairings: {}{}", System.lineSeparator(), finalPairings);
+        }
     }
 
     private List<Integer> getCandidateReceiverIndexesForCurrentParticipant(

@@ -1,0 +1,9 @@
+name,name_exemptions
+participant1,participant2;participant3
+participant2,participant1;
+participant4,participant1
+participant5,participant1
+participant6,participant3;participant4;
+participant7,participant5
+participant8,participant10
+participant10,participant6;participant7;participant9

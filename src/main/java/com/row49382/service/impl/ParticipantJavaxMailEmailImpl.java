@@ -18,6 +18,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.util.List;
+import java.util.Objects;
 
 public class ParticipantJavaxMailEmailImpl implements Emailable {
     /**
@@ -30,12 +31,12 @@ public class ParticipantJavaxMailEmailImpl implements Emailable {
     private static final String GRABBAG_MESSAGE_TEMPLATE =
             "Hello %s, <br /><br />" +
             "Thank for participating in the grab-bag! <br /><br />" +
-            "You have %s as your recipient. <br /><br />" +
+            "<strong>You have %s as your recipient. </strong><br /><br />" +
             "Happy gifting!";
 
     private static final String GRABBAG_SUBJECT_MESSAGE_TEMPLATE = "Grab-bag Selection for %s";
     private static final String MIME_TYPE_TEXT_HTML_CHARSET_UTF8 = "text/html; charset=utf-8";
-    private static final String GRABBAG_EMAIL_ERROR_MESSAGE_TEMPLATE = "Error occurred while sending message to %s's email: %s";
+    private static final String GRABBAG_EMAIL_SEND_ERROR_MESSAGE_TEMPLATE = "Error occurred while sending message to %s's email: %s";
 
     private final List<Participant> participants;
     private final ApplicationPropertiesManager applicationPropertiesManager;
@@ -44,7 +45,13 @@ public class ParticipantJavaxMailEmailImpl implements Emailable {
     public ParticipantJavaxMailEmailImpl(
             ApplicationPropertiesManager applicationPropertiesManager,
             PropertiesManager mailPropertiesManager,
-            List<Participant> participants) {
+            List<Participant> participants) throws EmailServiceException {
+        Objects.requireNonNull(participants);
+
+        if (participants.stream().map(Participant::getReceiver).anyMatch(Objects::isNull)) {
+            throw new EmailServiceException("One or more participants has no receiver. No emails will be sent out.");
+        }
+
         this.participants = participants;
         this.applicationPropertiesManager = applicationPropertiesManager;
         this.mailPropertiesManager = mailPropertiesManager;
@@ -63,7 +70,7 @@ public class ParticipantJavaxMailEmailImpl implements Emailable {
             } catch (MessagingException me) {
                 throw new EmailServiceException(
                         String.format(
-                                GRABBAG_EMAIL_ERROR_MESSAGE_TEMPLATE,
+                                GRABBAG_EMAIL_SEND_ERROR_MESSAGE_TEMPLATE,
                                 participant.getName(),
                                 participant.getEmail()),
                         me);

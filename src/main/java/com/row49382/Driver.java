@@ -45,18 +45,18 @@ public class Driver {
                 new Random(),
                 applicationPropertiesManager);
 
-        Emailable emailingService = new ParticipantJavaxMailEmailImpl(
-                applicationPropertiesManager,
-                mailPropertiesManager,
-                participants);
-
         try {
+            Emailable emailingService = new ParticipantJavaxMailEmailImpl(
+                    applicationPropertiesManager,
+                    mailPropertiesManager,
+                    participants);
+
             pairingGenerator.generate();
             emailingService.send();
         } catch (PairingGenerateException pge) {
             LOG.error("Error occurred while attempting to generate pairings: {}", pge.getMessage());
         } catch (EmailServiceException ese) {
-            LOG.error("Error occurred while attempting to send emails out: {}", ese.getMessage());
+            LOG.error("Error occurred: {}", ese.getMessage());
         }
     }
 
