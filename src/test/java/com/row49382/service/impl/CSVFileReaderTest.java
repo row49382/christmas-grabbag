@@ -8,9 +8,9 @@ import java.io.IOException;
 public abstract class CSVFileReaderTest<T> {
     protected CSVFileReader<T> csvFileReader;
 
-    protected abstract void testExpectedCSVIsLoaded() throws IOException;
-    protected abstract void testInvalidFileThrowsIOException();
-    protected abstract void testReadIsCachedIfRanOnce() throws IOException;
+    public abstract void testExpectedCSVIsLoaded() throws IOException;
+    public abstract void testInvalidFileThrowsIOException();
+    public abstract void testReadIsCachedIfRanOnce() throws IOException;
 
     protected void assertIOExceptionThrownWhenFileNotFound() {
         Assertions.assertThrows(IOException.class, () -> this.csvFileReader.read());
