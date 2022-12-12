@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class CSVParticipantFileReaderTest extends CSVFileReaderTest<List<Participant>> {
-    private static final String CSV_FILE_NAME = "participants-test.csv";
+    private static final String CSV_FILE_NAME = "participants-test-multiple.csv";
     private static final char DEFAULT_DELIMITER = ',';
 
     @BeforeEach
@@ -21,7 +21,7 @@ public class CSVParticipantFileReaderTest extends CSVFileReaderTest<List<Partici
 
     @Override
     @Test
-    protected void testExpectedCSVIsLoaded() throws IOException {
+    public void testExpectedCSVIsLoaded() throws IOException {
         List<Participant> expected = List.of(
                 new Participant("participant1", "email1@email.com"),
                 new Participant("participant2", "email2@email.com"),
@@ -33,14 +33,14 @@ public class CSVParticipantFileReaderTest extends CSVFileReaderTest<List<Partici
 
     @Override
     @Test
-    protected void testInvalidFileThrowsIOException() {
+    public void testInvalidFileThrowsIOException() {
         this.csvFileReader = new CSVParticipantFileReader("invalidFile.csv", DEFAULT_DELIMITER);
         this.assertIOExceptionThrownWhenFileNotFound();
     }
 
     @Override
     @Test
-    protected void testReadIsCachedIfRanOnce() throws IOException {
+    public void testReadIsCachedIfRanOnce() throws IOException {
         List<Participant> participants = this.csvFileReader.read();
         assertSame(participants, this.csvFileReader.read());
     }

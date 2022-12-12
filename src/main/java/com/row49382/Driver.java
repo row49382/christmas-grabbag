@@ -1,8 +1,7 @@
 package com.row49382;
 
 import com.row49382.domain.Participant;
-import com.row49382.exception.EmailServiceException;
-import com.row49382.exception.PairingGenerateException;
+import com.row49382.exception.ApplicationExecutionException;
 import com.row49382.service.Emailable;
 import com.row49382.service.PairingGeneratable;
 import com.row49382.service.impl.CSVParticipantFileReader;
@@ -17,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -31,10 +31,15 @@ import java.util.Random;
 public class Driver {
     private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ApplicationExecutionException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Application has started with args {}, loading dependencies now.", Arrays.toString(args));
+        }
+
         ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager();
-        PropertiesManager mailPropertiesManager = new MailPropertiesManager();
         LogbackConfiguration.setLevel(applicationPropertiesManager.getLogLevel());
+
+        PropertiesManager mailPropertiesManager = new MailPropertiesManager();
 
         List<Participant> participants = loadParticipants(applicationPropertiesManager);
         Map<String, String[]> exemptionsByParticipantName = loadExemptions(applicationPropertiesManager);
@@ -50,14 +55,12 @@ public class Driver {
                 mailPropertiesManager,
                 participants);
 
-        try {
-            pairingGenerator.generate();
-            emailingService.send();
-        } catch (PairingGenerateException pge) {
-            LOG.error("Error occurred while attempting to generate pairings: {}", pge.getMessage());
-        } catch (EmailServiceException ese) {
-            LOG.error("Error occurred while attempting to send emails out: {}", ese.getMessage());
-        }
+        LOG.debug("Dependencies loaded successfully. Starting invoker now.");
+
+        Invoker invoker = new Invoker(applicationPropertiesManager, pairingGenerator, emailingService);
+        invoker.invoke();
+
+        LOG.debug("Invoker ran successfully. Shutting down program now.");
     }
 
     private static Map<String, String[]> loadExemptions(ApplicationPropertiesManager applicationPropertiesManager)
