@@ -32,12 +32,12 @@ public class Driver {
     private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 
     public static void main(String[] args) throws IOException, ApplicationExecutionException {
+        ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager();
+        LogbackConfiguration.setLevel(applicationPropertiesManager.getLogLevel());
+
         if (LOG.isDebugEnabled()) {
             LOG.debug("Application has started with args {}, loading dependencies now.", Arrays.toString(args));
         }
-
-        ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager();
-        LogbackConfiguration.setLevel(applicationPropertiesManager.getLogLevel());
 
         PropertiesManager mailPropertiesManager = new MailPropertiesManager();
 
