@@ -2,6 +2,8 @@ package com.row49382.util.impl;
 
 import com.row49382.util.PropertiesManager;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class ApplicationPropertiesManager extends PropertiesManager {
@@ -17,6 +19,8 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private static final String APP_PROPERTIES_PAIRING_MAX_RETRY_COUNT_KEY = "application.pairing.maxretrycount";
     private static final String APP_PROPERTIES_LOG_LEVEL_KEY = "application.log.level";
     private static final String APP_PROPERTIES_EMAIL_DO_SEND_KEY = "application.email.do_send";
+    private static final String APP_PROPERTIES_RESULTS_DO_SAVE_KEY = "application.results.do_save";
+    private static final String APP_PROPERTIES_RESULTS_FILE_NAME_KEY = "application.results.file_name";
 
     private final String officiantEmail;
     private final String applicationFromEmailAddress;
@@ -29,6 +33,8 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private final int pairingMaxRetryCount;
     private final String logLevel;
     private final boolean sendEmail;
+    private final boolean saveResults;
+    private final String resultsFileName;
 
     public ApplicationPropertiesManager() {
         super(APP_PROPERTIES_FILE_NAME);
@@ -44,6 +50,8 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         this.pairingMaxRetryCount = Integer.parseInt((String) properties.get(APP_PROPERTIES_PAIRING_MAX_RETRY_COUNT_KEY));
         this.logLevel = (String) properties.get(APP_PROPERTIES_LOG_LEVEL_KEY);
         this.sendEmail = Boolean.parseBoolean((String) properties.get(APP_PROPERTIES_EMAIL_DO_SEND_KEY));
+        this.saveResults = Boolean.parseBoolean((String) properties.get(APP_PROPERTIES_RESULTS_DO_SAVE_KEY));
+        String resultsFileNameValue = (String) properties.get(APP_PROPERTIES_RESULTS_FILE_NAME_KEY);
 
         Objects.requireNonNull(this.officiantEmail);
         Objects.requireNonNull(this.applicationFromEmailAddress);
@@ -52,6 +60,15 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         Objects.requireNonNull(this.exemptionsCSVFileName);
         Objects.requireNonNull(this.participantsCSVFileName);
         Objects.requireNonNull(this.logLevel);
+
+        if (this.saveResults) {
+            Objects.requireNonNull(resultsFileNameValue);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM_dd_yyyy_hh_mm_ss");
+
+            resultsFileNameValue = String.format(resultsFileNameValue, formatter.format(LocalDateTime.now()));
+        }
+
+        this.resultsFileName = resultsFileNameValue;
     }
 
     public String getOfficiantEmail() {
@@ -94,7 +111,15 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         return logLevel;
     }
 
-    public boolean isSendEmail() {
+    public boolean doSendEmail() {
         return sendEmail;
+    }
+
+    public boolean doSaveResults() {
+        return this.saveResults;
+    }
+
+    public String getResultsFileName() {
+        return this.resultsFileName;
     }
 }
