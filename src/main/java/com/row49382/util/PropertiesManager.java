@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
-public class PropertiesManager {
+public abstract class PropertiesManager {
     protected final Properties properties;
 
     protected PropertiesManager(String propertiesFileName) {

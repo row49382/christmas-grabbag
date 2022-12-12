@@ -2,7 +2,6 @@ package com.row49382.util;
 
 import com.row49382.exception.PropertiesLoadException;
 import com.row49382.util.impl.ApplicationPropertiesManager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -62,6 +61,6 @@ class PropertiesManagerTest {
     @NullSource
     @ValueSource(strings = { "non-existent-properties.properties"})
     void verifyNullPointerExceptionIsThrownWhenFileValueIsNullOrNonExistent(String fileName) {
-        assertThrows(NullPointerException.class, () -> new PropertiesManager(fileName));
+        assertThrows(NullPointerException.class, () -> new PropertiesManager(fileName) {});
     }
 }
