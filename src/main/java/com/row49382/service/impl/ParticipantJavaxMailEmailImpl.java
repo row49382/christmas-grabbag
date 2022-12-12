@@ -45,12 +45,8 @@ public class ParticipantJavaxMailEmailImpl implements Emailable {
     public ParticipantJavaxMailEmailImpl(
             ApplicationPropertiesManager applicationPropertiesManager,
             PropertiesManager mailPropertiesManager,
-            List<Participant> participants) throws EmailServiceException {
+            List<Participant> participants) {
         Objects.requireNonNull(participants);
-
-        if (participants.stream().map(Participant::getReceiver).anyMatch(Objects::isNull)) {
-            throw new EmailServiceException("One or more participants has no receiver. No emails will be sent out.");
-        }
 
         this.participants = participants;
         this.applicationPropertiesManager = applicationPropertiesManager;
@@ -58,6 +54,10 @@ public class ParticipantJavaxMailEmailImpl implements Emailable {
     }
 
     public void send() throws EmailServiceException {
+        if (this.participants.stream().map(Participant::getReceiver).anyMatch(Objects::isNull)) {
+            throw new EmailServiceException("One or more participants has no receiver. No emails will be sent out.");
+        }
+
         Session session = this.getSession();
 
         for (Participant participant : this.participants) {

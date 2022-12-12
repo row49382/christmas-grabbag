@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -56,7 +57,7 @@ class ParticipantJavaxMailEmailImplTest {
 
     @ParameterizedTest
     @MethodSource("getParticipantsAndVerificationTimesExpectations")
-    void testNumberOfEmailsSentAreSameAsParticipantsSize(List<Participant> participants, int expectedEmailsSent) throws EmailServiceException {
+    void testNumberOfEmailsSentAreSameAsParticipantsSize(List<Participant> participants, int expectedEmailsSent) {
         Emailable emailService =  new ParticipantJavaxMailEmailImpl(
                 this.applicationPropertiesManager,
                 this.mailPropertiesManager,
@@ -74,17 +75,18 @@ class ParticipantJavaxMailEmailImplTest {
     }
 
     @Test
-    void testWhenParticipantsHasOneOrMoreNullReceiverErrorOccursDuringConstruction() {
-        Assertions.assertThrows(
+    void testWhenParticipantsHasOneOrMoreNullReceiverErrorOccursDuringSend() {
+        assertThrows(
                 EmailServiceException.class,
                 () -> new ParticipantJavaxMailEmailImpl(
                         this.applicationPropertiesManager,
                         this.mailPropertiesManager,
-                        ParticipantsFactory.of(ParticipantsFactory.ParticipantTestOption.MULTIPLE_NULL_RECEIVERS)));
+                        ParticipantsFactory.of(ParticipantsFactory.ParticipantTestOption.MULTIPLE_NULL_RECEIVERS))
+                        .send());
     }
 
     @Test
-    void verifyWhenTransportThrowsMessagingExceptionEmailServiceExceptionIsThrownInstead() throws IOException, EmailServiceException {
+    void verifyWhenTransportThrowsMessagingExceptionEmailServiceExceptionIsThrownInstead() throws IOException {
         Emailable emailService =  new ParticipantJavaxMailEmailImpl(
                 this.applicationPropertiesManager,
                 this.mailPropertiesManager,
@@ -94,7 +96,7 @@ class ParticipantJavaxMailEmailImplTest {
             transportMock.when(() -> Transport.send(any(Message.class)))
                     .thenThrow(MessagingException.class);
 
-            Assertions.assertThrows(
+            assertThrows(
                     EmailServiceException.class,
                     emailService::send);
         }
