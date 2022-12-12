@@ -1,9 +1,7 @@
 package com.row49382;
 
 import com.row49382.domain.Participant;
-import com.row49382.exception.DriverExecutionException;
-import com.row49382.exception.EmailServiceException;
-import com.row49382.exception.PairingGenerateException;
+import com.row49382.exception.ApplicationExecutionException;
 import com.row49382.service.Emailable;
 import com.row49382.service.PairingGeneratable;
 import com.row49382.service.impl.CSVParticipantFileReader;
@@ -18,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -32,73 +31,39 @@ import java.util.Random;
 public class Driver {
     private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
 
-    private final ApplicationPropertiesManager applicationPropertiesManager;
-    private final PropertiesManager mailPropertiesManager;
-    private final PairingGeneratable pairingGenerator;
-    private final Emailable emailingService;
-    private final List<Participant> participants;
+    public static void main(String[] args) throws IOException, ApplicationExecutionException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Application has started with args {}, loading dependencies now.", Arrays.toString(args));
+        }
 
-    private Driver() throws IOException {
-        this.applicationPropertiesManager = new ApplicationPropertiesManager();
-        this.mailPropertiesManager = new MailPropertiesManager();
+        ApplicationPropertiesManager applicationPropertiesManager = new ApplicationPropertiesManager();
+        LogbackConfiguration.setLevel(applicationPropertiesManager.getLogLevel());
 
-        this.participants = loadParticipants(this.applicationPropertiesManager);
-        Map<String, String[]> exemptionsByParticipantName = loadExemptions(this.applicationPropertiesManager);
+        PropertiesManager mailPropertiesManager = new MailPropertiesManager();
 
-       this.pairingGenerator = new ParticipantWithExemptionsPairingGenerator(
+        List<Participant> participants = loadParticipants(applicationPropertiesManager);
+        Map<String, String[]> exemptionsByParticipantName = loadExemptions(applicationPropertiesManager);
+
+        PairingGeneratable pairingGenerator = new ParticipantWithExemptionsPairingGenerator(
                 participants,
                 exemptionsByParticipantName,
                 new Random(),
                 applicationPropertiesManager);
 
-       this.emailingService = new ParticipantJavaxMailEmailImpl(
-                this.applicationPropertiesManager,
-                this.mailPropertiesManager,
-                this.participants);
+        Emailable emailingService = new ParticipantJavaxMailEmailImpl(
+                applicationPropertiesManager,
+                mailPropertiesManager,
+                participants);
+
+        LOG.debug("Dependencies loaded successfully. Starting invoker now.");
+
+        Invoker invoker = new Invoker(applicationPropertiesManager, pairingGenerator, emailingService);
+        invoker.invoke();
+
+        LOG.debug("Invoker ran successfully. Shutting down program now.");
     }
 
-    public static Driver getDriver() throws IOException {
-        return new Driver();
-    }
-
-    public static void main(String[] args) throws IOException, DriverExecutionException {
-        Driver app = getDriver();
-        LogbackConfiguration.setLevel(app.getApplicationPropertiesManager().getLogLevel());
-
-        try {
-            app.getPairingGenerator().generate();
-
-            if (app.getApplicationPropertiesManager().isSendEmail()) {
-                app.getEmailingService().send();
-            } else {
-                LOG.debug("Flag to send emails was disabled in applications.properties. No emails were sent.");
-            }
-        } catch (PairingGenerateException pge) {
-            LOG.error("Error occurred while attempting to generate pairings: {}", pge.getMessage());
-            throw new DriverExecutionException();
-        } catch (EmailServiceException ese) {
-            LOG.error("Error occurred: {}", ese.getMessage());
-            throw new DriverExecutionException();
-        }
-    }
-
-    public ApplicationPropertiesManager getApplicationPropertiesManager() {
-        return applicationPropertiesManager;
-    }
-
-    public PairingGeneratable getPairingGenerator() {
-        return pairingGenerator;
-    }
-
-    public Emailable getEmailingService() {
-        return emailingService;
-    }
-
-    public List<Participant> getParticipants() {
-        return participants;
-    }
-
-    private Map<String, String[]> loadExemptions(ApplicationPropertiesManager applicationPropertiesManager)
+    private static Map<String, String[]> loadExemptions(ApplicationPropertiesManager applicationPropertiesManager)
             throws IOException {
         return new CSVParticipantExemptionsFileReader(
                 applicationPropertiesManager.getExemptionsCSVFileName(),
@@ -106,7 +71,7 @@ public class Driver {
                 applicationPropertiesManager.getExemptionsCSVNameExemptionsDelimiter()).read();
     }
 
-    private List<Participant> loadParticipants(ApplicationPropertiesManager applicationPropertiesManager)
+    private static List<Participant> loadParticipants(ApplicationPropertiesManager applicationPropertiesManager)
             throws IOException {
         return new CSVParticipantFileReader(
                 applicationPropertiesManager.getParticipantsCSVFileName(),
