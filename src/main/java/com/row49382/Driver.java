@@ -3,9 +3,11 @@ package com.row49382;
 import com.row49382.domain.Participant;
 import com.row49382.exception.ApplicationExecutionException;
 import com.row49382.service.Emailable;
+import com.row49382.service.FileWritable;
 import com.row49382.service.PairingGeneratable;
 import com.row49382.service.impl.CSVParticipantFileReader;
 import com.row49382.service.impl.CSVParticipantExemptionsFileReader;
+import com.row49382.service.impl.CSVResultsFileWriter;
 import com.row49382.service.impl.ParticipantJavaxMailEmailImpl;
 import com.row49382.service.impl.ParticipantWithExemptionsPairingGenerator;
 import com.row49382.util.LogbackConfiguration;
@@ -55,9 +57,15 @@ public class Driver {
                 mailPropertiesManager,
                 participants);
 
+        FileWritable resultsWriter = new CSVResultsFileWriter(
+                applicationPropertiesManager.getResultsFileName(),
+                applicationPropertiesManager.getCsvDelimiter(),
+                participants,
+                applicationPropertiesManager.getResultsDirectory());
+
         LOG.debug("Dependencies loaded successfully. Starting invoker now.");
 
-        Invoker invoker = new Invoker(applicationPropertiesManager, pairingGenerator, emailingService);
+        Invoker invoker = new Invoker(applicationPropertiesManager, pairingGenerator, emailingService, resultsWriter);
         invoker.invoke();
 
         LOG.debug("Invoker ran successfully. Shutting down program now.");
