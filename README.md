@@ -4,7 +4,7 @@
 Application that will generate a random pairing of people and send each of them an email with who they have in the grabbag.
 
 # Technologies
-Requires Java 9+ and Maven to run this application
+Requires Java 11+ and Maven to run this application
 
 # Customize Participants
 To customize participants, update the participants.csv file found under resources folder
