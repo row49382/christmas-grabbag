@@ -27,7 +27,7 @@ class CSVResultsFileWriterTest {
                     .getPath()).getParentFile();
 
     private static final String ACTUAL_RESULT_FILE_NAME = "participants-test-result-output.csv";
-    private static final String TEST_RESULT_SUB_DIRECTORY = "\\results\\test\\";
+    private static final String TEST_RESULT_SUB_DIRECTORY = File.separator + "results" + File.separator + "test" + File.separator;
     private static final String ACTUAL_RESULT_TEST_SUB_DIRECTORY = TARGET_DIRECTORY + TEST_RESULT_SUB_DIRECTORY;
     private static final String RESULTS_FILE_PATH = ACTUAL_RESULT_TEST_SUB_DIRECTORY + ACTUAL_RESULT_FILE_NAME;
     private static final String CSV_TEST_RESULTS_FILE_NAME = "participants-test-multiple-results.csv";
