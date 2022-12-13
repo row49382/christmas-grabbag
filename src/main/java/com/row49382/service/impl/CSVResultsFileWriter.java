@@ -6,8 +6,8 @@ import com.row49382.service.CSVFileWriter;
 import java.util.List;
 
 public class CSVResultsFileWriter extends CSVFileWriter<List<Participant>> {
-    public CSVResultsFileWriter(String fileName, char delimiter, List<Participant> data) {
-        super(fileName, delimiter, data);
+    public CSVResultsFileWriter(String fileName, char delimiter, List<Participant> data, String resultsDirectory) {
+        super(fileName, delimiter, data, resultsDirectory);
     }
 
     @Override

@@ -21,6 +21,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private static final String APP_PROPERTIES_EMAIL_DO_SEND_KEY = "application.email.do_send";
     private static final String APP_PROPERTIES_RESULTS_DO_SAVE_KEY = "application.results.do_save";
     private static final String APP_PROPERTIES_RESULTS_FILE_NAME_KEY = "application.results.file_name";
+    private static final String APP_PROPERTIES_RESULTS_DIRECTORY_KEY = "application.results.results_directory";
 
     private final String officiantEmail;
     private final String applicationFromEmailAddress;
@@ -35,6 +36,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
     private final boolean sendEmail;
     private final boolean saveResults;
     private final String resultsFileName;
+    private final String resultsDirectory;
 
     public ApplicationPropertiesManager() {
         super(APP_PROPERTIES_FILE_NAME);
@@ -52,6 +54,7 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         this.sendEmail = Boolean.parseBoolean((String) properties.get(APP_PROPERTIES_EMAIL_DO_SEND_KEY));
         this.saveResults = Boolean.parseBoolean((String) properties.get(APP_PROPERTIES_RESULTS_DO_SAVE_KEY));
         String resultsFileNameValue = (String) properties.get(APP_PROPERTIES_RESULTS_FILE_NAME_KEY);
+        this.resultsDirectory = (String) properties.get(APP_PROPERTIES_RESULTS_DIRECTORY_KEY);
 
         Objects.requireNonNull(this.officiantEmail);
         Objects.requireNonNull(this.applicationFromEmailAddress);
@@ -63,8 +66,9 @@ public class ApplicationPropertiesManager extends PropertiesManager {
 
         if (this.saveResults) {
             Objects.requireNonNull(resultsFileNameValue);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM_dd_yyyy_hh_mm_ss");
+            Objects.requireNonNull(this.resultsDirectory);
 
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM_dd_yyyy_hh_mm_ss");
             resultsFileNameValue = String.format(resultsFileNameValue, formatter.format(LocalDateTime.now()));
         }
 
@@ -121,5 +125,9 @@ public class ApplicationPropertiesManager extends PropertiesManager {
 
     public String getResultsFileName() {
         return this.resultsFileName;
+    }
+
+    public String getResultsDirectory() {
+        return this.resultsDirectory;
     }
 }

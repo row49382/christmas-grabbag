@@ -60,7 +60,8 @@ public class Driver {
         FileWritable resultsWriter = new CSVResultsFileWriter(
                 applicationPropertiesManager.getResultsFileName(),
                 applicationPropertiesManager.getCsvDelimiter(),
-                participants);
+                participants,
+                applicationPropertiesManager.getResultsDirectory());
 
         LOG.debug("Dependencies loaded successfully. Starting invoker now.");
 

@@ -30,7 +30,8 @@ public class ApplicationPropertiesManagerTest extends PropertiesManagerImplBaseT
                 Arguments.of("application.csv.participants.file_name", applicationPropertiesManager.getParticipantsCSVFileName()),
                 Arguments.of("application.csv.delimiter", Character.toString(applicationPropertiesManager.getCsvDelimiter())),
                 Arguments.of("application.email.do_send", Boolean.toString(applicationPropertiesManager.doSendEmail())),
-                Arguments.of("application.results.do_save", Boolean.toString(applicationPropertiesManager.doSaveResults())));
+                Arguments.of("application.results.do_save", Boolean.toString(applicationPropertiesManager.doSaveResults())),
+                Arguments.of("application.results.results_directory", applicationPropertiesManager.getResultsDirectory()));
     }
 
     @Override

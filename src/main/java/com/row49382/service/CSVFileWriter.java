@@ -14,23 +14,25 @@ public abstract class CSVFileWriter<T> implements FileWritable {
     protected String fileName;
     protected char delimiter;
     protected T data;
+    protected String resultsDirectory;
 
-    protected CSVFileWriter(String fileName, char delimiter, T data) {
+    protected CSVFileWriter(String fileName, char delimiter, T data, String resultsDirectory) {
         this.fileName = fileName;
         this.delimiter = delimiter;
         this.data = data;
+        this.resultsDirectory = resultsDirectory;
     }
 
     @Override
     public void write() throws IOException {
         File targetDirectory = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile();
-        Path resultsDirectory = Paths.get(targetDirectory + "\\results\\");
+        Path resultsDirectoryPath = Paths.get(targetDirectory + "\\" + this.resultsDirectory + "\\");
 
-        if (!Files.exists(resultsDirectory)) {
-            Files.createDirectories(resultsDirectory);
+        if (!Files.exists(resultsDirectoryPath)) {
+            Files.createDirectories(resultsDirectoryPath);
         }
 
-        String resultsFilePath = resultsDirectory + "\\" + this.fileName + "\\";
+        String resultsFilePath = resultsDirectoryPath + "\\" + this.fileName + "\\";
         LOG.debug("Writing results file to location {}", resultsFilePath);
 
         Files.write(

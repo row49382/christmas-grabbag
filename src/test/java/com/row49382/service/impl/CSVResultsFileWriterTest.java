@@ -3,8 +3,9 @@ package com.row49382.service.impl;
 import com.row49382.service.CSVFileReader;
 import com.row49382.service.FileReadable;
 import com.row49382.service.FileWritable;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import test_util.factory.ParticipantsFactory;
 
@@ -25,16 +26,18 @@ class CSVResultsFileWriterTest {
                     .getLocation()
                     .getPath()).getParentFile();
 
-    private static final String ACTUAL_RESULT_FILE_NAME = "participant-test-result-output.csv";
-    private static final String RESULTS_DIRECTORY = TARGET_DIRECTORY + "\\results\\";
-
-    private static final String RESULTS_FILE_PATH = RESULTS_DIRECTORY + ACTUAL_RESULT_FILE_NAME + "\\";
+    private static final String ACTUAL_RESULT_FILE_NAME = "participants-test-result-output.csv";
+    private static final String TEST_RESULT_SUB_DIRECTORY = "\\results\\test\\";
+    private static final String ACTUAL_RESULT_TEST_SUB_DIRECTORY = TARGET_DIRECTORY + TEST_RESULT_SUB_DIRECTORY;
+    private static final String RESULTS_FILE_PATH = ACTUAL_RESULT_TEST_SUB_DIRECTORY + ACTUAL_RESULT_FILE_NAME;
     private static final String CSV_TEST_RESULTS_FILE_NAME = "participants-test-multiple-results.csv";
     private static final char DEFAULT_DELIMITER = ',';
 
-    @AfterEach
-    public void cleanup() throws IOException {
-        Files.deleteIfExists(Paths.get(RESULTS_FILE_PATH));
+    @BeforeEach
+    public void setup() {
+        if (Files.exists(Paths.get(ACTUAL_RESULT_TEST_SUB_DIRECTORY))) {
+            FileUtils.deleteQuietly(new File(ACTUAL_RESULT_TEST_SUB_DIRECTORY));
+        }
     }
 
     private final FileReadable<String> csvTestResultReader = new CSVFileReader<>(CSV_TEST_RESULTS_FILE_NAME, DEFAULT_DELIMITER) {
@@ -73,7 +76,8 @@ class CSVResultsFileWriterTest {
         FileWritable resultsWriter = new CSVResultsFileWriter(
                 ACTUAL_RESULT_FILE_NAME,
                 DEFAULT_DELIMITER,
-                ParticipantsFactory.of(ParticipantsFactory.ParticipantTestOption.MULTIPLE));
+                ParticipantsFactory.of(ParticipantsFactory.ParticipantTestOption.MULTIPLE),
+                TEST_RESULT_SUB_DIRECTORY);
 
         resultsWriter.write();
         String actualCSV = Files.readAllLines(Paths.get(RESULTS_FILE_PATH))
@@ -86,14 +90,13 @@ class CSVResultsFileWriterTest {
 
     @Test
     void testCreateResultsDirectoryIfDoesNotExist() throws IOException {
-        Files.deleteIfExists(Paths.get(RESULTS_DIRECTORY));
-
         FileWritable resultsWriter = new CSVResultsFileWriter(
                 ACTUAL_RESULT_FILE_NAME,
                 DEFAULT_DELIMITER,
-                ParticipantsFactory.of(ParticipantsFactory.ParticipantTestOption.MULTIPLE));
+                ParticipantsFactory.of(ParticipantsFactory.ParticipantTestOption.MULTIPLE),
+                TEST_RESULT_SUB_DIRECTORY);
         resultsWriter.write();
 
-        assertTrue(Files.exists(Paths.get(RESULTS_DIRECTORY)));
+        assertTrue(Files.exists(Paths.get(ACTUAL_RESULT_TEST_SUB_DIRECTORY)));
     }
 }
