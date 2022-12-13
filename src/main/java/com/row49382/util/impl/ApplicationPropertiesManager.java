@@ -2,6 +2,7 @@ package com.row49382.util.impl;
 
 import com.row49382.util.PropertiesManager;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -54,7 +55,8 @@ public class ApplicationPropertiesManager extends PropertiesManager {
         this.sendEmail = Boolean.parseBoolean((String) properties.get(APP_PROPERTIES_EMAIL_DO_SEND_KEY));
         this.saveResults = Boolean.parseBoolean((String) properties.get(APP_PROPERTIES_RESULTS_DO_SAVE_KEY));
         String resultsFileNameValue = (String) properties.get(APP_PROPERTIES_RESULTS_FILE_NAME_KEY);
-        this.resultsDirectory = (String) properties.get(APP_PROPERTIES_RESULTS_DIRECTORY_KEY);
+        this.resultsDirectory = ((String) properties.get(APP_PROPERTIES_RESULTS_DIRECTORY_KEY))
+                .replace("\\\\", File.separator);
 
         Objects.requireNonNull(this.officiantEmail);
         Objects.requireNonNull(this.applicationFromEmailAddress);

@@ -25,14 +25,16 @@ public abstract class CSVFileWriter<T> implements FileWritable {
 
     @Override
     public void write() throws IOException {
-        File targetDirectory = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile();
-        Path resultsDirectoryPath = Paths.get(targetDirectory + "\\" + this.resultsDirectory + "\\");
+        File targetDirectory = new File(
+                this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile();
+        Path resultsDirectoryPath = Paths.get(
+                targetDirectory + File.separator + this.resultsDirectory + File.separator);
 
         if (!Files.exists(resultsDirectoryPath)) {
             Files.createDirectories(resultsDirectoryPath);
         }
 
-        String resultsFilePath = resultsDirectoryPath + "\\" + this.fileName + "\\";
+        String resultsFilePath = resultsDirectoryPath + File.separator + this.fileName + File.separator;
         LOG.debug("Writing results file to location {}", resultsFilePath);
 
         Files.write(
